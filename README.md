@@ -135,6 +135,6 @@ python tests/check_converters.py
 
 GitHub Actions 配置了 Python 3.9/3.12 的测试、示例出图，以及 Linux 上的转换验证。
 
-本地已验证环境：Python 3.9.6、Matplotlib 3.9.4、Inkscape 1.4.3、Ghostscript 10.06.0。GitHub Actions 需要推送后才会实际运行。
+本地已验证环境：Python 3.9.6、Matplotlib 3.9.4、Inkscape 1.4.3、Ghostscript 10.06.0。GitHub Actions 在推送和 PR 时自动验证 Python 3.9/3.12 及 Linux 格式转换；PDF 导入会自动适配 Inkscape 的不同页码参数。
 
 项目结构与从旧脚本迁移的方法见 [迁移说明](docs/migration.md)。发布前的检查步骤见 [GitHub 发布说明](docs/publishing.md)。

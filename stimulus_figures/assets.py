@@ -32,7 +32,8 @@ def find_tool(name):
 
 def run(command):
     try:
-        subprocess.run([str(c) for c in command], check=True, capture_output=True, text=True, timeout=120)
+        result = subprocess.run([str(c) for c in command], check=True, capture_output=True, text=True, timeout=120)
+        return result.stdout
     except subprocess.CalledProcessError as exc:
         detail = exc.stderr.strip() or exc.stdout.strip() or f"process exited with code {exc.returncode}"
         raise ValueError(f"{Path(str(command[0])).name} conversion failed: {detail}") from exc
@@ -47,12 +48,18 @@ def convert_source(source, target):
         shutil.copyfile(source, target)
         return target
     inkscape = find_tool("inkscape")
+    # Inkscape versions use different names for the PDF import page option.
+    help_text = run([inkscape, "--help"])
+    page_option = next((flag for flag in ("--pages", "--pdf-page", "--pdf-pages")
+                        if re.search(re.escape(flag) + r"(?:=|\s)", help_text)), None)
+    if page_option is None:
+        raise ValueError("This Inkscape version does not expose a supported PDF page selection option")
     with tempfile.TemporaryDirectory(prefix="stimulus-figure-") as temp:
         pdf = source
         if source.suffix.lower() == ".eps":
             pdf = Path(temp) / "source.pdf"
             run([find_tool("gs"), "-dSAFER", "-dBATCH", "-dNOPAUSE", "-sDEVICE=pdfwrite", "-dEPSCrop", f"-sOutputFile={pdf}", source])
-        run([inkscape, pdf, "--pages=1", "--pdf-poppler", "--export-type=svg", "--export-plain-svg", f"--export-filename={target}"])
+        run([inkscape, pdf, f"{page_option}=1", "--pdf-poppler", "--export-type=svg", "--export-plain-svg", f"--export-filename={target}"])
     return target
 
 

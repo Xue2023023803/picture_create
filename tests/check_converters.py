@@ -5,11 +5,15 @@ import json
 from pathlib import Path
 import sys
 import tempfile
+from xml.etree import ElementTree as ET
 
 # Works both from a checkout and after pip install -e .
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from stimulus_figures.cli import generate
 from stimulus_figures.config import load_config
+from stimulus_figures.assets import convert_source, viewbox
+from matplotlib.backends.backend_pdf import PdfPages
+from matplotlib.figure import Figure
 
 
 def main():
@@ -41,7 +45,17 @@ def main():
         config_path.write_text(json.dumps(data), encoding="utf-8")
         with contextlib.redirect_stdout(io.StringIO()):
             generate(load_config(config_path))
-    print("PASS: horizontal/3d SVG→PDF/PNG, EPS→SVG→figure, PDF→SVG→figure")
+        # Distinct page sizes catch importing the wrong page or a combined canvas.
+        multipage = temp / "multipage.pdf"
+        with PdfPages(multipage) as document:
+            for size in ((2, 1), (1, 2)):
+                figure = Figure(figsize=size)
+                figure.add_subplot().plot([0, 1], [0, 1])
+                document.savefig(figure)
+        first_page = convert_source(multipage, temp / "first_page.svg")
+        _, _, width, height = viewbox(ET.parse(first_page).getroot())
+        assert abs(width / height - 2) < 1e-6, "PDF import must retain page 1 dimensions"
+    print("PASS: horizontal/3d SVG→PDF/PNG, EPS→SVG→figure, PDF→SVG→figure, multipage PDF page 1")
 
 
 if __name__ == "__main__":
