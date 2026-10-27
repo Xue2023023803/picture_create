@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "seed": 1,
+  "output_dir": "../output/demo",
+  "asset_formats": ["svg", "eps"],
+  "figure_formats": ["svg"],
+  "stimulus_defaults": {"mode": 2, "dot_mode": "connected", "n_pairs": 4},
+  "stimuli": [
+    {"id": "connected", "count": 3},
+    {"id": "attention_left", "mode": 1, "patch_side": "left", "patch_pattern": 0},
+    {"id": "attention_right", "mode": 1, "patch_side": "right", "patch_pattern": 2},
+    {"id": "attention_diagonal", "mode": 1, "patch_side": "right", "patch_pattern": 3, "patch_diagonal": "anti"},
+    {"id": "blank", "mode": 3}
+  ],
+  "rows": [
+    {"title": "Connected dots", "stimuli": ["connected_01", "blank", "connected_02", "blank", "connected_03", "blank"]},
+    {"title": "Dots with a color square", "stimuli": ["attention_left", "blank", "attention_right", "blank", "attention_diagonal", "blank"], "axis_on_top": true}
+  ],
+  "times_ms": [0, 300, 650, 950, 1300, 1600, 1950],
+  "figure": {"layout": "horizontal", "font_family": "DejaVu Sans"},
+  "physical_series": [1, 2, 4, 8, 16, 32, 64, 512, 1, 2, 4, 8, 16, 32, 64, 512],
+  "series_highlight": 4,
+  "series_linked": true
+}

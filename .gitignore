@@ -1,0 +1,16 @@
+# Original local working material is retained, not published.
+/creature/
+/output/
+/dist/
+/build/
+*.egg-info/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mplconfig/
+.DS_Store
+.env
+.env.*
+!.env.example

@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "seed": 7,
+  "output_dir": "../output/stimuli_only",
+  "asset_formats": ["svg", "eps", "pdf", "png"],
+  "stimuli": [
+    {"id": "isolated", "dot_mode": "isolated", "n_dots": 16, "count": 3},
+    {"id": "connected", "n_pairs": 8, "count": 3},
+    {"id": "color_square", "mode": 1, "patch_side": "left", "patch_pattern": 0},
+    {"id": "background", "mode": 3}
+  ]
+}

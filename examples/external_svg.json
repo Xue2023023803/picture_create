@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "output_dir": "../output/external_svg",
+  "asset_formats": ["svg"],
+  "figure_formats": ["svg"],
+  "stimuli": [
+    {"id": "selected", "source": "sample.svg"},
+    {"id": "blank", "mode": 3}
+  ],
+  "rows": [
+    {"title": "Manually selected artwork", "stimuli": ["selected", "blank", "selected", "blank"]}
+  ],
+  "times_ms": [0, 300, 650, 950, 1300]
+}

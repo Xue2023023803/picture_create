@@ -1,0 +1,45 @@
+name: Test and render examples
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.9", "3.12"]
+    env:
+      MPLBACKEND: Agg
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip install -e .
+      - run: python -m unittest discover -s tests -v
+      - run: stimulus-figures --config examples/demo.json --check
+      - run: stimulus-figures --config examples/demo.json
+      - run: stimulus-figures --config examples/demo.json --layout 3d --output output/demo_3d
+      - uses: actions/upload-artifact@v4
+        with:
+          name: svg-examples-python-${{ matrix.python }}
+          path: output/
+
+  conversion:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: sudo apt-get update && sudo apt-get install -y inkscape ghostscript
+      - run: python -m pip install -e .
+      - run: stimulus-figures --config examples/demo.json --formats svg,pdf,png
+      - run: stimulus-figures --config examples/demo.json --layout 3d --output output/demo_3d --formats svg,pdf,png
+      - run: python tests/check_converters.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: converted-examples
+          path: output/
